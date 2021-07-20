@@ -1,5 +1,5 @@
-const State = require("../lib/State.js")
-const { BooleanTransition, SelfTransition, Transition } = require("../lib/Transitions.js")
+const { State, Transitions } = require("../src")
+const { BooleanTransition, SelfTransition, Transition } = Transitions
 
 const initialState = new State("INITIAL_STATE")
 const browsingState = new State("BROWSING_STATE")

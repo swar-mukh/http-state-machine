@@ -1,4 +1,4 @@
-const StateMachine = require("../lib/StateMachine.js")
+const { StateMachine } = require("../src")
 
 const { initialState } = require("./myTransitions.js")
 
