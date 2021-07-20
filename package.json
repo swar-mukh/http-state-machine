@@ -1,6 +1,19 @@
 {
     "name": "http-state-machine",
+    "description": "A practical, simple and performant state-machine (with auto-discovery) for APIs following HTTP",
+    "keywords": [
+        "http-state-machine",
+        "http state machine",
+        "state machine",
+        "state-machine",
+        "node state machine"
+    ],
     "private": "true",
+    "author": {
+        "name": "Swarnava Mukherjee"
+    },
+    "version": "1.0.0",
+    "main": "./src/index.js",
     "scripts": {
         "test:repl": "node -i -e 'let {sessionManager, listener, initialState} = require(\"./test/index.js\")'"
     },
