@@ -1,0 +1,8 @@
+{
+    "name": "http-state-machine",
+    "private": "true",
+    "scripts": {
+        "test:repl": "node -i -e 'let {sessionManager, listener, initialState} = require(\"./test/index.js\")'"
+    },
+    "dependencies": {}
+}
