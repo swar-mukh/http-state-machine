@@ -7,7 +7,9 @@ const { initialState } = require("./transitions.js")
 const sessionManager = new Map()
 const stateMachine = new StateMachine(initialState)
 
-const server = http.createServer(async (request, response) => {
+const args = new Map(process.argv.slice(2).map(argument => argument.split("=")))
+
+const handler = async (request, response) => {
     const simplifiedRequest = await util.simplifyRequest(request)
     
     const sessionId = simplifiedRequest.headers.cookie.get("sessId")
@@ -26,9 +28,21 @@ const server = http.createServer(async (request, response) => {
 
         stateMachine.next({ request: simplifiedRequest, response }, newClient)
     }
-})
+}
 
-server.listen(8080, "0.0.0.0", () => console.info(`Server up and running in `, server.address()))
+if (Array.from(args.keys()).includes("--help")) {
+    console.log("Usage:\n")
+    console.log("demo host='<hostId>' port=<portNumber>\n")
+    console.log("hostId:\t0.0.0.0\t(Default)")
+    console.log("port  :\t8080\t(Default)\n")
+} else {
+    console.log("Type 'demo --help' from terminal for more info\n")
 
+    const server = http.createServer(handler)
+    
+    server.once("error", err => console.error("Error encountered:", err.message))
+    
+    server.listen(args.get("port") || 8080, args.get("host") || "0.0.0.0", () => console.info(`Server up and running in `, server.address()))
+}
 
 module.exports = { sessionManager, initialState }
