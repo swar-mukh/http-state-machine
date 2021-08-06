@@ -78,10 +78,13 @@ const simplifyRequest = async (request) => {
                         const extractedData = keyFileRegex.exec(part)
 
                         const fileKey = extractedData[1]
+                        const actualFile = Buffer.from(extractedData[4]) // TODO: parse depending on content-type
+                        
                         const fileObject = {
                             filename: extractedData[2],
                             contentType: extractedData[3],
-                            file: Buffer.from(extractedData[4])
+                            file: actualFile,
+                            size: actualFile.length
                         }
 
                         if (files[fileKey]) {
