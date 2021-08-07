@@ -1,24 +1,11 @@
 const querystring = require('querystring')
 
-const processStream = (request) => {
-    const promise = new Promise((resolve, reject) => {
-        let body = []
-
-        request.on("error", err => reject(err))
-        request.on("data", chunk => body.push(chunk))
-        request.on("end", () => resolve(Buffer.concat(body).toString()))
-    })
-
-    return promise
-}
-
-const stringToArray = (value, delimiter) =>
-    (value && value.trim() !== "") ?
-        value.split(delimiter).map(item => item.trim())
-        : []
-
-const keyValueRegex = /name=\"(.+)\"\r\n\r\n(.+)\r\n--/m
-const keyFileRegex = /name=\"(.+)\"; filename=\"(.+)\"\r\nContent-Type: (.+)\r\n\r\n([\S\s]*)\r\n--/m
+const {
+    Constants,
+    processStream,
+    stringToArray,
+    urlToObject
+} = require("./_aux")
 
 const simplifyRequest = async (request) => {
     const { headers, method, url } = request
@@ -39,7 +26,7 @@ const simplifyRequest = async (request) => {
             }
         },
         method,
-        url: new URL(url, `${request.socket.encrypted ? "https" : "http"}://${headers["host"]}`),
+        url: urlToObject(new URL(url, `${request.socket.encrypted ? "https" : "http"}://${headers["host"]}`)),
         headers: {
             ...headers,
             cookie: new Map(stringToArray(headers.cookie, ";").map(item => item.split("="))),
@@ -70,16 +57,16 @@ const simplifyRequest = async (request) => {
                 .filter(part => part.startsWith("\r\nContent-Disposition"))
                 .map(part => part.trim())
                 .forEach(part => {
-                    if (keyValueRegex.test(part)) {
-                        const extractedData = keyValueRegex.exec(part)
+                    if (Constants.KEY_VALUE_REGEX.test(part)) {
+                        const extractedData = Constants.KEY_VALUE_REGEX.exec(part)
                         parsedData[extractedData[1]] = extractedData[2]
                     }
-                    else if (keyFileRegex.test(part)) {
-                        const extractedData = keyFileRegex.exec(part)
+                    else if (Constants.KEY_FILE_REGEX.test(part)) {
+                        const extractedData = Constants.KEY_FILE_REGEX.exec(part)
 
                         const fileKey = extractedData[1]
                         const actualFile = Buffer.from(extractedData[4]) // TODO: parse depending on content-type
-                        
+
                         const fileObject = {
                             filename: extractedData[2],
                             contentType: extractedData[3],
