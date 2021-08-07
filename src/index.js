@@ -1,7 +1,7 @@
-const StateMachine = require("./lib/StateMachine.js")
-const State = require("./lib/State.js")
-const Transitions = require("./lib/Transitions.js")
-const ClientState = require("./lib/ClientState.js")
+const StateMachine = require("./lib/StateMachine")
+const State = require("./lib/State")
+const Transitions = require("./lib/Transitions")
+const ClientState = require("./lib/ClientState")
 
 const HttpIO = require("./util/httpIO/HttpIO")
 const Router = require("./util/routing/Router")
