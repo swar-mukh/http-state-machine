@@ -1,6 +1,6 @@
 function State(name) {
     this.name = name
-    this.events = new Map()
+    this.events = []
 }
 
 State.prototype = {
@@ -9,11 +9,20 @@ State.prototype = {
 
     invoke: function (callbackFn) { return callbackFn ? callbackFn() : { resp: `Inside '${this.name}' state` } },
 
-    addEvent: function (name, transition) {
-        this.events.set(name, transition)
+    addEvent: function (route, transition) {
+        this.events.push({ route, transition })
+    },
+    getEvent: function (request) {
+        const event = this.events.find(event => event.route.match(request))
+
+        if (event?.route.parameters) {
+            request.url.pathParams = event.route.getPathVariables(request)
+        }
+
+        return event
     },
     getApplicableEvents: function () {
-        return Array.from(this.events.keys())
+        return this.events.map(event => { return { method: event.route.method, path: event.route.path } })
     }
 }
 

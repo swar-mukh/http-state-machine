@@ -9,11 +9,12 @@ function StateMachine(configuration = defaultStateMachineConfiguration) {
 
 StateMachine.prototype = {
     next: function ({ request, response }, client) {
-        if (client.currentState.getApplicableEvents().includes(request.url.pathname)) {
+        const event = client.currentState.getEvent(request)
 
+        if (event) {
             client.currentState.onExit()
 
-            const transitionObject = client.currentState.events.get(request.url.pathname)
+            const transitionObject = event.transition
 
             switch (transitionObject.type) {
                 case "normal": {
