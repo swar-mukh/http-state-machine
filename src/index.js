@@ -3,10 +3,12 @@ const State = require("./lib/State.js")
 const Transitions = require("./lib/Transitions.js")
 const ClientState = require("./lib/ClientState.js")
 
-const HttpIO = require("./util/HttpIO")
+const HttpIO = require("./util/httpIO/HttpIO")
+const Router = require("./util/routing/Router")
 
 const util = {
-    simplifyRequest: HttpIO.simplifyRequest
+    simplifyRequest: HttpIO.simplifyRequest,
+    Router
 }
 
 module.exports = {
