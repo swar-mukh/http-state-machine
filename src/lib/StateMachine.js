@@ -8,40 +8,40 @@ function StateMachine(configuration = defaultStateMachineConfiguration) {
 }
 
 StateMachine.prototype = {
-    next: function ({ request, response }, client) {
-        const event = client.currentState.getEvent(request)
+    next: function ({ request, response }, clientState) {
+        const event = clientState.currentState.getEvent(request, clientState.context)
 
         if (event) {
-            client.currentState.onExit()
+            clientState.currentState.onExit()
 
             const transitionObject = event.transition
 
             switch (transitionObject.type) {
                 case "normal": {
-                    transitionObject.action(request, response)
-                    client.currentState = transitionObject.transitionTo
+                    transitionObject.action(request, response, clientState.context)
+                    clientState.currentState = transitionObject.transitionTo
                     break
                 }
                 case "self": {
-                    transitionObject.action(request, response)
+                    transitionObject.action(request, response, clientState.context)
                     break
                 }
                 case "boolean": {
-                    if (transitionObject.action(request, response)) {
-                        client.currentState = transitionObject.transitionToOnSuccess
+                    if (transitionObject.action(request, response, clientState.context)) {
+                        clientState.currentState = transitionObject.transitionToOnSuccess
                     } else {
-                        client.currentState = transitionObject.transitionToOnFailure
+                        clientState.currentState = transitionObject.transitionToOnFailure
                     }
                     break
                 }
                 default: { }
             }
 
-            client.currentState.onEntry()
-            client.currentState.invoke()
+            clientState.currentState.onEntry()
+            clientState.currentState.invoke()
 
             if (!this.configuration.suppressHateoas) {
-                response.write(JSON.stringify({ hateoas: client.currentState.getApplicableEvents() }))
+                response.write(JSON.stringify({ [this.configuration.hateoasAttributeName]: clientState.currentState.getApplicableEvents(request, clientState.context) }))
             }
         } else {
             response.writeHead(404, {
@@ -49,7 +49,7 @@ StateMachine.prototype = {
             })
             response.write(JSON.stringify({
                 message: "Invalid Path!",
-                hateoas: client.currentState.getApplicableEvents()
+                [this.configuration.hateoasAttributeName]: clientState.currentState.getApplicableEvents(request, clientState.context)
             }))
         }
 

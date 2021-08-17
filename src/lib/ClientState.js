@@ -1,4 +1,4 @@
-function ClientState(initialState, initialContext) {
+function ClientState(initialState, initialContext = {}) {
     this.currentState = initialState
     this.context = initialContext
 }

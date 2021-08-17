@@ -9,11 +9,11 @@ State.prototype = {
 
     invoke: function (callbackFn) { return callbackFn ? callbackFn() : { resp: `Inside '${this.name}' state` } },
 
-    addEvent: function (route, transition) {
-        this.events.push({ route, transition })
+    addEvent: function (route, transition, guardFn = (_req, _csx) => true) {
+        this.events.push({ route, transition, guardFn })
     },
-    getEvent: function (request) {
-        const event = this.events.find(event => event.route.match(request))
+    getEvent: function (request, clientStateContext) {
+        const event = this.events.find(event => event.guardFn(request, clientStateContext) && event.route.match(request))
 
         if (event?.route.parameters) {
             request.url.pathParams = event.route.getPathVariables(request)
@@ -21,8 +21,13 @@ State.prototype = {
 
         return event
     },
-    getApplicableEvents: function () {
-        return this.events.map(event => { return { method: event.route.method, path: event.route.path } })
+    getApplicableEvents: function (request, clientStateContext) {
+        return this.events
+            .filter(event => event.guardFn(request, clientStateContext))
+            .map(event => ({
+                method: event.route.method,
+                path: event.route.path
+            }))
     }
 }
 
