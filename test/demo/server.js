@@ -5,7 +5,7 @@ const { StateMachine, ClientState, util } = require("../../src")
 const { initialState } = require("./transitions.js")
 
 const sessionManager = new Map()
-const stateMachine = new StateMachine(initialState)
+const stateMachine = new StateMachine()
 
 const args = new Map(process.argv.slice(2).map(argument => argument.split("=")))
 
