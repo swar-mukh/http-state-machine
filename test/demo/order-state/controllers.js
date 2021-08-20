@@ -1,13 +1,13 @@
 module.exports = {
-    doViewCart: (request, response) => {
+    doViewCart: (request, response, clientStateContext) => {
         response.writeHead(200, { "Content-Type": "application/json" })
         response.write(JSON.stringify({ data: "doViewCart() called" }))
     },
-    doCancelOrder: (request, response) => {
+    doCancelOrder: (request, response, clientStateContext) => {
         response.writeHead(200, { "Content-Type": "application/json" })
         response.write(JSON.stringify({ data: "doCancelOrder() called" }))
     },
-    doMakePayment: (request, response) => {
+    doMakePayment: (request, response, clientStateContext) => {
         response.writeHead(200, { "Content-Type": "application/json" })
         response.write(JSON.stringify({ data: "doMakePayment() called" }))
     }

@@ -14,11 +14,11 @@ const browsingState = new State("BROWSING_STATE")
 const cartState = new State("CART_STATE")
 const orderState = new State("ORDER_STATE")
 
-initialState.addEvent(Router.get("/login"), new BooleanTransition(initialStateController.doLogin, browsingState, initialState))
+initialState.addEvent(Router.post("/login"), new BooleanTransition(initialStateController.doLogin, browsingState, initialState))
 initialState.addEvent(Router.get("/auth/:name/forgot-password/:actionId"), new BooleanTransition(initialStateController.doLogin, browsingState, initialState))
 initialState.addEvent(Router.get("/auth/:name"), new BooleanTransition(initialStateController.doLogin, browsingState, initialState))
 
-browsingState.addEvent(Router.get("/view-more"), new SelfTransition(browsingStateController.doViewMore))
+browsingState.addEvent(Router.get("/view-more"), new SelfTransition(browsingStateController.doViewMore), (request, clientStateContext) => (clientStateContext.calledTimes || 0) < 4)
 browsingState.addEvent(Router.get("/logout"), new Transition(browsingStateController.doLogout, initialState))
 browsingState.addEvent(Router.get("/add-item-to-cart"), new Transition(browsingStateController.doAddItem, cartState))
 
