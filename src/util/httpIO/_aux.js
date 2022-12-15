@@ -18,20 +18,18 @@ module.exports = {
         (value && value.trim() !== "") ?
             value.split(delimiter).map(item => item.trim())
             : [],
-    urlToObject: urlObject => {
-        return {
-            href: urlObject.href,
-            origin: urlObject.origin,
-            protocol: urlObject.protocol,
-            username: urlObject.username,
-            password: urlObject.password,
-            host: urlObject.host,
-            hostname: urlObject.hostname,
-            port: urlObject.port,
-            pathname: urlObject.pathname,
-            search: urlObject.search,
-            searchParams: Object.fromEntries(urlObject.searchParams.entries()),
-            hash: urlObject.hash
-        }
-    }
+    urlToObject: urlObject => ({
+        href: urlObject.href,
+        origin: urlObject.origin,
+        protocol: urlObject.protocol,
+        username: urlObject.username,
+        password: urlObject.password,
+        host: urlObject.host,
+        hostname: urlObject.hostname,
+        port: urlObject.port,
+        pathname: urlObject.pathname,
+        search: urlObject.search,
+        searchParams: Object.fromEntries(urlObject.searchParams.entries()),
+        hash: urlObject.hash
+    })
 }
